@@ -1,4 +1,6 @@
 package org.example;
+
+import java.util.Arrays;
 public class Cinema {
     private int[][][] seats;
 
@@ -71,4 +73,45 @@ public class Cinema {
                 System.out.println();
             }
         }
+
+
+    public int[] findBestAvailableSeats(int hallNumber, int numSeats) {
+        for (int row = 0; row < 10; row++) {
+            for (int seat = 0; seat <= 20 - numSeats; seat++) {
+                boolean available = true;
+                for (int i = 0; i < numSeats; i++) {
+                    if (seats[hallNumber][row][seat + i] == 1) {
+                        available = false;
+                        break;
+                    }
+                }
+                if (available) {
+                    return Arrays.copyOfRange(seats[hallNumber][row], seat, seat + numSeats);
+                }
+            }
+        }
+        return null; // Немає доступн місць
+    }
+
+
+    public void autoBook(int hallNumber, int numSeats) {
+        int[] bestAvailableSeats = findBestAvailableSeats(hallNumber, numSeats);
+
+        if (bestAvailableSeats != null) {
+            bookSeats(hallNumber, findAvailableRow(hallNumber, numSeats), bestAvailableSeats);
+            System.out.println("Автоматичне бронювання " + numSeats + " послідовних місць успішно.");
+        } else {
+            System.out.println("Немає достатньої кількості послідовних вільних місць.");
+        }
+    }
+
+
+    private int findAvailableRow(int hallNumber, int numSeats) {
+        for (int row = 0; row < 10; row++) {
+            if (checkAvailability(hallNumber, row, numSeats)) {
+                return row;
+            }
+        }
+        return -1; // Немає рядів
+    }
 }
